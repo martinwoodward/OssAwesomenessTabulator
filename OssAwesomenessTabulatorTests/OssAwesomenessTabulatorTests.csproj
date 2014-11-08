@@ -52,12 +52,18 @@
   <ItemGroup>
     <Compile Include="FunctionTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ConfigTest.cs" />
+    <Compile Include="GitHubTests.cs" />
+    <Compile Include="AwesomenessTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OssAwesomenessTabulator\OssAwesomenessTabulator.csproj">
       <Project>{3daf02df-120d-4e9e-a85a-f281be0ce43e}</Project>
       <Name>OssAwesomenessTabulator</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

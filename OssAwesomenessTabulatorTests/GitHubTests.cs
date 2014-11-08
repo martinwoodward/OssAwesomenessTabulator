@@ -1,0 +1,28 @@
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using OssAwesomenessTabulator.Data;
+using OssAwesomenessTabulator;
+using System.Collections.Generic;
+
+namespace OssAwesomenessTabulatorTests
+{
+    [TestClass]
+    public class GitHubTests
+    {
+        [TestMethod]
+        public void TestGetGitHubProjectData()
+        {
+            Project lookup = new Project { GithubOrg = "SignalR", GithubRepo = "SignalR" };
+            Project actual = GitHubUtils.GetGitHubProject(lookup).Result;
+            Assert.AreEqual<string>("SignalR", actual.Name);
+        }
+
+        [TestMethod]
+        public void TestGetProjectsFromOrg()
+        {
+            IList<Project> projects = GitHubUtils.GetGitHubProjects(new Org { Name = "Microsoft"}).Result;
+            Assert.IsNotNull(projects);
+        }
+
+    }
+}
