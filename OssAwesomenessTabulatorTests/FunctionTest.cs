@@ -23,9 +23,9 @@ namespace OssAwesomenessTabulatorTests
                 Name = "ASP.NET SignalR",
                 Url = "http://signalr.net/",
                 Description = "[ASP.NET SignalR](http://signalr.net/) is a library for ASP.NET developers that makes it incredibly simple to add real-time web functionality to your applications.",
-                License = "Apache 2.0",
-                Keywords = "SignalR;ASP.NET",
-                Tags = ".NET Foundation;ASP.NET;Microsoft;C#",
+                License = new License { Type="Apache 2.0" },
+                Keywords = new string[]{"SignalR","ASP.NET"},
+                Tags = new string[]{".NET Foundation","ASP.NET","Microsoft","C#"},
                 Contributor = "Microsoft",
                 Language = "C#",
                 GithubOrg = "SignalR",
@@ -35,7 +35,6 @@ namespace OssAwesomenessTabulatorTests
                 Updated = DateTime.Parse("2014-11-06 22:12"),
                 Stars = 4582,
                 Forks = 1302,
-                Members = 0,
                 Contributors = 59
             });
             data.AddProject(new Project
@@ -44,9 +43,9 @@ namespace OssAwesomenessTabulatorTests
                 Name = "ASP.NET MVC, Web API and Web Pages (Razor)",
                 Url = "https://aspnetwebstack.codeplex.com/",
                 Description = "[ASP.NET](http://asp.net) is a free web framework for building great web sites and applications. The ASP.NET web stack includes ASP.NET MVC 4.0, 5.0, Web API 1.0, 2.0, and Web Pages, 2,0, 3.0 source code. These products are actively developed by the ASP.NET team in collaboration with a community of open source developers. Together we are dedicated to creating the best possible platform for web development.",
-                License = "Apache 2.0",
-                Keywords = "ASP.NET;Razor;Web Pages;IIS;MVC",
-                Tags = ".NET Foundation;ASP.NET;Microsoft;C#",
+                License = new License { Type="Apache 2.0" },
+                Keywords = new string[]{"Razor","ASP.NET","Web Pages","IIS","MVC"},
+                Tags = new string[]{".NET Foundation","ASP.NET","Microsoft","C#"},
                 Contributor = "Microsoft",
                 Language = "C#",
                 CodePlexProject = "https://aspnetwebstack.codeplex.com/",
@@ -55,7 +54,6 @@ namespace OssAwesomenessTabulatorTests
                 Updated = DateTime.Parse("2014-11-06 22:12"),
                 Stars = 2752,
                 Forks = 385,
-                Members = 37,
                 Contributors = 37
             });
             data.AddProject(new Project
@@ -64,9 +62,8 @@ namespace OssAwesomenessTabulatorTests
                 Name = "Microsoft Azure SDK for .NET",
                 Url = "https://github.com/Azure/azure-sdk-for-net",
                 Description = "The [Microsoft Azure SDK for .NET](http://azure.microsoft.com/en-us/develop/net/) allows you to build applications that take advantage of scalable cloud computing resources.",
-                License = "Apache 2.0",
-                Keywords = "Azure",
-                Tags = ".NET Foundation;Azure;Microsoft;C#;SDK",
+                License = new License { Type="Apache 2.0" },
+                Tags = new string[]{".NET Foundation","Azure","Microsoft","C#","SDK"},
                 Contributor = "Microsoft",
                 Language = "C#",
                 GithubOrg = "Azure",
@@ -76,7 +73,6 @@ namespace OssAwesomenessTabulatorTests
                 Updated = DateTime.Parse("2014-11-06 22:54"),
                 Stars = 555,
                 Forks = 258,
-                Members = 0,
                 Contributors = 53
             });
             data.AddProject(new Project
@@ -85,10 +81,9 @@ namespace OssAwesomenessTabulatorTests
                 Name = "Couchbase Lite for .NET",
                 Url = "https://github.com/couchbaselabs/couchbase-lite-net",
                 Description = "This project is a port of the [Couchbase Lite](http://developer.couchbase.com/mobile/) portable Java codebase, ported to C#. Couchbase Lite is a fully functional, on-device, lightweight, native, embedded JSON database. With Couchbase Lite, you have the full power of a Couchbase database locally on the device. You can create, update, delete, query, sync and much, much more.",
-                License = "MIT",
-                LicenseUrl = "https://github.com/couchbaselabs/couchbase-lite-net/blob/master/LICENSE",
-                Keywords = "DB;JsonDB",
-                Tags = ".NET Foundation;Couchbase;C#",
+                License = new License { Type = "MIT", Url = "https://github.com/couchbaselabs/couchbase-lite-net/blob/master/LICENSE" },
+                Keywords = new string[] { "DB", "JSonDB", "Json"},
+                Tags = new string[] { ".NET Foundation", "Couchbase", "C#" },
                 Contributor = "Couchbase",
                 Language = "C#",
                 GithubOrg = "couchbaselabs",
@@ -98,7 +93,6 @@ namespace OssAwesomenessTabulatorTests
                 Updated = DateTime.Parse("2014-11-06 00:12"),
                 Stars = 76,
                 Forks = 21,
-                Members = 0,
                 Contributors = 11
             });
            

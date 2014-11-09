@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace OssAwesomenessTabulator.Data
 {
-    public class SummaryStats
+    public class License
     {
-        public int Projects { get; set; }
-        public int Contributors { get; set; }
-        public int Organizatios { get; set; }
+        public string Type { get; set; }
+        public string Url { get; set;}
     }
 }

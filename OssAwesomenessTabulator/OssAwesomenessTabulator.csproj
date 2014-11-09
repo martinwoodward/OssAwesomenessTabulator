@@ -111,6 +111,7 @@
     <Compile Include="Awesomeness.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Data\Contributors.cs" />
+    <Compile Include="Data\License.cs" />
     <Compile Include="Data\Org.cs" />
     <Compile Include="Data\Project.cs" />
     <Compile Include="Data\SiteConfig.cs" />
