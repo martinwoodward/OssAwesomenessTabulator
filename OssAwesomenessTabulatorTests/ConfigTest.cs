@@ -12,11 +12,10 @@ namespace OssAwesomenessTabulatorTests
         [TestMethod]
         public void TestLoad()
         {
-            Config config = Config.LoadFromWeb("https://raw.githubusercontent.com/Microsoft/microsoft.github.io/master/data/organization.json");
+            Config config = Config.LoadFromWeb("https://raw.githubusercontent.com/Microsoft/microsoft.github.io/master/data");
 
-            IList<Org> list = config.GetOrgs();
-
-            Assert.IsNotNull(list);
+            Assert.IsNotNull(config.GetOrgs());
+            Assert.IsNotNull(config.GetProjects());
         }
     }
 }

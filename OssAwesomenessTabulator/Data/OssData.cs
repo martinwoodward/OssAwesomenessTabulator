@@ -10,6 +10,9 @@ namespace OssAwesomenessTabulator.Data
     [DataContract]
     public class OssData
     {
+        private List<Project> _projects = new List<Project>();
+        private HashSet<string> _orgs = new HashSet<string>();
+        
         // Included in JSON
         [DataMember]
         public DateTimeOffset LastUpdated { get { return DateTimeOffset.Now; } }
@@ -30,12 +33,20 @@ namespace OssAwesomenessTabulator.Data
             }
         }
 
-        private List<Project> _projects = new List<Project>();
         public void AddProject(Project project)
         {
             _projects.Add(project);
             Summary.Projects = _projects.Count;
+            Summary.Contributors += project.Contributors;
+            Summary.OpenIssues += project.OpenIssues;
+            Summary.Forks += project.Forks;
+            Summary.Stars += project.Stars;
 
+            if (!String.IsNullOrEmpty(project.GithubOrg))
+            {
+                _orgs.Add(project.GithubOrg);
+                Summary.Organizations = _orgs.Count;
+            }            
         }
         public void AddProjects(Project[] projects)
         {
@@ -44,6 +55,49 @@ namespace OssAwesomenessTabulator.Data
                 AddProject(project);
             }
         }
+        public Project GetProject(Project project)
+        {
+            // This code is bad in many many way. Need to refactor.
+
+            bool found = false;
+            Project foundProject = null;
+            // Check to see if project already exists in data
+            foreach (Project p in _projects)
+            {
+                if (p.isGitHub())
+                {
+                    // looking for a GitHub Project
+                    if (project.GithubRepo == p.GithubRepo
+                        && project.GithubOrg == p.GithubOrg)
+                    {
+                        found = true;
+                    }
+                }
+                else if (!String.IsNullOrEmpty(project.CodePlexProject))
+                {
+                    // looking for a CodePlex Project
+                    if (project.CodePlexProject == p.CodePlexProject)
+                    {
+                        found = true;
+                    }
+                }
+                else
+                {
+                    // look for a match using URL
+                    if (p.Url == project.Url)
+                    {
+                        found = true;
+                    }
+                }
+                if (found)
+                {
+                    foundProject = p;
+                    break;
+                }
+            }
+            return foundProject;
+        }
+
 
         public OssData()
         {

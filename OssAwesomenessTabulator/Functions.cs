@@ -22,6 +22,7 @@ namespace OssAwesomenessTabulator
             Config config = Config.LoadFromWeb(configurationUrl);
             IList<Org> orgs = config.GetOrgs();
 
+            // Get the orgs
             foreach (Org org in orgs)
             {
                 try
@@ -34,6 +35,26 @@ namespace OssAwesomenessTabulator
                     // Consider throwing if not one of a set of defined types.
                     System.Diagnostics.Trace.TraceError("Exception detected in org \"{0}\": {1}", org.Name, ex.StackTrace);
                 }                
+            }
+
+            // Now we've loaded the projects from the orgs, let's load up the individual projects to load / update
+            IList<Project> projects = config.GetProjects();
+            foreach (Project project in projects)
+            {
+                Project existing = data.GetProject(project);
+                if (existing != null)
+                {
+                    // Update project
+                    existing.Update(project);
+                }
+                else if (project.isGitHub())
+                {
+                    data.AddProject(GitHubUtils.GetGitHubProject(project).Result);
+                }
+                else if (String.IsNullOrEmpty(project.CodePlexProject))
+                {
+                    data.AddProject(CodePlexUtils.GetProject(project));
+                }
             }
 
             return (data);

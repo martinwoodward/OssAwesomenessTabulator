@@ -109,6 +109,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Awesomeness.cs" />
+    <Compile Include="CodePlexUtils.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Data\Contributors.cs" />
     <Compile Include="Data\License.cs" />

@@ -14,7 +14,7 @@ namespace OssAwesomenessTabulator
 
         public static async Task<IList<Project>> GetGitHubProjects (Org org)
         {
-            var github = new GitHubClient(new ProductHeaderValue(_userAgent));
+            var github = getCient();
             var repos = await github.Repository.GetAllForOrg(org.Name);
 
             List<Project> projects = new List<Project>(repos.Count);
@@ -36,7 +36,7 @@ namespace OssAwesomenessTabulator
         public static async Task<Project> GetGitHubProject(Project project)
         {
             // Use OckokitAPI to get data on a repo
-            var github = new GitHubClient(new ProductHeaderValue(_userAgent));
+            var github = getCient();
             var repo = await github.Repository.Get(project.GithubOrg, project.GithubRepo);
 
             return PopulateProjectFromRepo(project, repo);
@@ -50,6 +50,7 @@ namespace OssAwesomenessTabulator
             project.CommitLast = repo.PushedAt;
             project.Stars = repo.StargazersCount;
             project.Forks = repo.ForksCount;
+            project.OpenIssues = repo.OpenIssuesCount;
 
             // Fields defaulted from GitHub but could have overrides specified
             if (String.IsNullOrEmpty(project.Name))
@@ -81,6 +82,13 @@ namespace OssAwesomenessTabulator
             project.Awesomeness = Awesomeness.Calculate(project);
 
             return project;
+        }
+
+
+        private static GitHubClient getCient()
+        {
+            GitHubClient client = new GitHubClient(new ProductHeaderValue(_userAgent));
+            return client;
         }
 
     }

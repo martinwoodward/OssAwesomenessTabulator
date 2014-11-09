@@ -135,7 +135,7 @@ namespace OssAwesomenessTabulatorTests
         [TestMethod]
         public void WriteProjectsFile()
         {
-            OssData data = Functions.GetData("https://raw.githubusercontent.com/Microsoft/microsoft.github.io/master/data/organization.json");
+            OssData data = Functions.GetData("https://raw.githubusercontent.com/Microsoft/microsoft.github.io/master/data");
 
             String json;
             using (var output = new MemoryStream())

@@ -14,8 +14,8 @@ namespace OssAwesomenessTabulator
 {
     public class Config
     {
-        private string _configdata;
-        private JToken _config;
+        private JToken _orgConfig;
+        private JToken _projectConfig;
 
         private Config()
         {
@@ -28,14 +28,21 @@ namespace OssAwesomenessTabulator
 
             using (var web = new WebClient())
             {
-                config._configdata = web.DownloadString(url);
+                String orgUrl = url + "/organization.json";
+                String projectUrl = url + "/project.json";
                 
                 HttpClient client = new HttpClient();
-                using (Stream s = client.GetStreamAsync(url).Result)
+                using (Stream s = client.GetStreamAsync(orgUrl).Result)
                 using (StreamReader sr = new StreamReader(s))
                 using (JsonReader reader = new JsonTextReader(sr))
                 {
-                    config._config = JObject.ReadFrom(reader);
+                    config._orgConfig = JObject.ReadFrom(reader);
+                }
+                using (Stream s = client.GetStreamAsync(projectUrl).Result)
+                using (StreamReader sr = new StreamReader(s))
+                using (JsonReader reader = new JsonTextReader(sr))
+                {
+                    config._projectConfig = JObject.ReadFrom(reader);
                 }
             }
             return config;
@@ -43,7 +50,12 @@ namespace OssAwesomenessTabulator
 
         public IList<Org> GetOrgs()
         {
-            return _config.ToObject<IList<Org>>();
+            return _orgConfig.ToObject<IList<Org>>();
+        }
+
+        public IList<Project> GetProjects()
+        {
+            return _projectConfig.ToObject<IList<Project>>();
         }
 
     }

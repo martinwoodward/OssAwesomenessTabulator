@@ -25,7 +25,7 @@ namespace OssAwesomenessTabulator
         private static void Execute()
         {
             // Get Data
-            OssData data = Functions.GetData("https://raw.githubusercontent.com/Microsoft/microsoft.github.io/master/data/organization.json");
+            OssData data = Functions.GetData("https://raw.githubusercontent.com/Microsoft/microsoft.github.io/master/data");
 
             // Write to Azure blob
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(ConfigurationManager.ConnectionStrings["AzureWebJobsStorage"].ConnectionString); 
