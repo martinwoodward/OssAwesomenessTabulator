@@ -17,7 +17,7 @@ namespace OssAwesomenessTabulatorTests
                 CommitLast = DateTimeOffset.Now.Subtract(TimeSpan.FromDays(31)),
                 Stars = 10
             };
-            Assert.AreEqual(52, Awesomeness.Calculate(p));
+            Assert.AreEqual(53, Awesomeness.Calculate(p));
         }
 
         [TestMethod]
@@ -28,7 +28,7 @@ namespace OssAwesomenessTabulatorTests
                 Created = DateTimeOffset.Now,
                 Stars = 1000
             };
-            Assert.AreEqual(-1, Awesomeness.Calculate(p));
+            Assert.AreEqual(0, Awesomeness.Calculate(p));
         }
 
         [TestMethod]

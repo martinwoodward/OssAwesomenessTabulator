@@ -28,18 +28,26 @@ namespace OssAwesomenessTabulator
             if (project.CommitLast == null)
             {
                 // Project hasn't done anything yet, not very awesome
-                return -1;
+                return 0;
             }
 
             double pushTicks = DateTimeOffset.Now.Subtract((DateTimeOffset)project.CommitLast).Ticks;
             double createdTicks = DateTimeOffset.Now.Subtract(project.Created).Ticks;
 
+            // People power, if you have a high star factor (i.e. stars per day) then you
+            // are definately awesome.
             double awesomeness = (Star_Awesomeness * project.Stars) / createdTicks;
+            
+            // Make it so a recent contribution pushes you up the stack, but make the effect
+            // fade quickly (as determined by the halflife of a push.
             awesomeness += Push_Awesomeness * Math.Pow(Math.E, -1 * Push_Halflife * pushTicks);
+            
+            // Everyone who makes their code open source is a little bit awesome.
+            awesomeness++;
 
             if (awesomeness > Int16.MaxValue)
             {
-                // Nobody likes a show-off.
+                // Because nobody likes a show-off.
                 awesomeness = Int16.MaxValue;
             }
 
