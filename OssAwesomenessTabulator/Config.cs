@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Net.Http;
 using OssAwesomenessTabulator.Data;
+using Octokit;
 
 namespace OssAwesomenessTabulator
 {
@@ -17,15 +18,29 @@ namespace OssAwesomenessTabulator
         private JToken _orgConfig;
         private JToken _projectConfig;
 
+        public Credentials GitHubCredentials { get; set; }
+
         private Config()
         {
             // Use Config.LoadFromWeb(string url) to construct
         }
 
+        public static Config LoadFromWeb(string url, Credentials githubCredentials)
+        {
+            Config config = LoadFromWeb(url);
+            config.GitHubCredentials = githubCredentials;
+            return config;
+        }
+
         public static Config LoadFromWeb(string url)
         {
             Config config = new Config();
+            config.LoadOrgsAndProjects(url);
+            return config;
+        }
 
+        private void LoadOrgsAndProjects(string url)
+        {
             using (var web = new WebClient())
             {
                 String orgUrl = url + "/organization.json";
@@ -36,16 +51,15 @@ namespace OssAwesomenessTabulator
                 using (StreamReader sr = new StreamReader(s))
                 using (JsonReader reader = new JsonTextReader(sr))
                 {
-                    config._orgConfig = JObject.ReadFrom(reader);
+                    this._orgConfig = JObject.ReadFrom(reader);
                 }
                 using (Stream s = client.GetStreamAsync(projectUrl).Result)
                 using (StreamReader sr = new StreamReader(s))
                 using (JsonReader reader = new JsonTextReader(sr))
                 {
-                    config._projectConfig = JObject.ReadFrom(reader);
+                    this._projectConfig = JObject.ReadFrom(reader);
                 }
             }
-            return config;
         }
 
         public IList<Org> GetOrgs()
@@ -57,6 +71,7 @@ namespace OssAwesomenessTabulator
         {
             return _projectConfig.ToObject<IList<Project>>();
         }
+
 
     }
 }

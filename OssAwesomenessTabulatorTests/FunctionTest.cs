@@ -114,7 +114,7 @@ namespace OssAwesomenessTabulatorTests
             Org org = new Org { Name = "Microsoft" };
 
             OssData data = new OssData();
-            data.AddProjects(GitHubUtils.GetGitHubProjects(org).Result.ToArray());
+            data.AddProjects(GitHubUtils.GetGitHubProjects(org, null).Result.ToArray());
 
             String json;
             using (var output = new MemoryStream())
@@ -135,7 +135,7 @@ namespace OssAwesomenessTabulatorTests
         [TestMethod]
         public void WriteProjectsFile()
         {
-            OssData data = Functions.GetData("https://raw.githubusercontent.com/Microsoft/microsoft.github.io/master/data");
+            OssData data = Functions.GetData(Config.LoadFromWeb("https://raw.githubusercontent.com/Microsoft/microsoft.github.io/master/data"));
 
             String json;
             using (var output = new MemoryStream())

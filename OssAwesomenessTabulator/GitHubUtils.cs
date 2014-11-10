@@ -3,6 +3,7 @@ using OssAwesomenessTabulator.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,9 +13,9 @@ namespace OssAwesomenessTabulator
     {
         private static readonly string _userAgent = "OssAwesomenessTabulator";
 
-        public static async Task<IList<Project>> GetGitHubProjects (Org org)
+        public static async Task<IList<Project>> GetGitHubProjects(Org org, Credentials creds)
         {
-            var github = getCient();
+            var github = getCient(creds);
             var repos = await github.Repository.GetAllForOrg(org.Name);
 
             List<Project> projects = new List<Project>(repos.Count);
@@ -33,10 +34,10 @@ namespace OssAwesomenessTabulator
             return projects;
         }
 
-        public static async Task<Project> GetGitHubProject(Project project)
+        public static async Task<Project> GetGitHubProject(Project project, Credentials creds)
         {
             // Use OckokitAPI to get data on a repo
-            var github = getCient();
+            var github = getCient(creds);
             var repo = await github.Repository.Get(project.GithubOrg, project.GithubRepo);
 
             return PopulateProjectFromRepo(project, repo);
@@ -85,9 +86,13 @@ namespace OssAwesomenessTabulator
         }
 
 
-        private static GitHubClient getCient()
+        private static GitHubClient getCient(Credentials creds)
         {
             GitHubClient client = new GitHubClient(new ProductHeaderValue(_userAgent));
+            if (creds != null)
+            {
+                client.Credentials = creds;
+            }            
             return client;
         }
 

@@ -13,14 +13,14 @@ namespace OssAwesomenessTabulatorTests
         public void TestGetGitHubProjectData()
         {
             Project lookup = new Project { GithubOrg = "SignalR", GithubRepo = "SignalR" };
-            Project actual = GitHubUtils.GetGitHubProject(lookup).Result;
+            Project actual = GitHubUtils.GetGitHubProject(lookup, null).Result;
             Assert.AreEqual<string>("SignalR", actual.Name);
         }
 
         [TestMethod]
         public void TestGetProjectsFromOrg()
         {
-            IList<Project> projects = GitHubUtils.GetGitHubProjects(new Org { Name = "Microsoft"}).Result;
+            IList<Project> projects = GitHubUtils.GetGitHubProjects(new Org { Name = "Microsoft"}, null).Result;
             Assert.IsNotNull(projects);
         }
 

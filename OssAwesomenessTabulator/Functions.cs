@@ -15,11 +15,10 @@ namespace OssAwesomenessTabulator
     public class Functions
     {
 
-        public static OssData GetData (string configurationUrl)
+        public static OssData GetData(Config config)
         {
             OssData data = new OssData();
 
-            Config config = Config.LoadFromWeb(configurationUrl);
             IList<Org> orgs = config.GetOrgs();
 
             // Get the orgs
@@ -27,7 +26,7 @@ namespace OssAwesomenessTabulator
             {
                 try
                 {
-                    data.AddProjects(GitHubUtils.GetGitHubProjects(org).Result.ToArray());
+                    data.AddProjects(GitHubUtils.GetGitHubProjects(org, config.GitHubCredentials).Result.ToArray());
                 }
                 catch (Exception ex)
                 {
@@ -49,7 +48,7 @@ namespace OssAwesomenessTabulator
                 }
                 else if (project.isGitHub())
                 {
-                    data.AddProject(GitHubUtils.GetGitHubProject(project).Result);
+                    data.AddProject(GitHubUtils.GetGitHubProject(project, config.GitHubCredentials).Result);
                 }
                 else if (String.IsNullOrEmpty(project.CodePlexProject))
                 {
