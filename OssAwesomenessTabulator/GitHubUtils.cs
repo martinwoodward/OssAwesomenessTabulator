@@ -6,17 +6,40 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace OssAwesomenessTabulator
 {
-    public static class GitHubUtils
+    public class GitHubUtils
     {
+        private GitHubClient _client;
+        private Credentials _creds;
         private static readonly string _userAgent = "OssAwesomenessTabulator";
 
-        public static async Task<IList<Project>> GetGitHubProjects(Org org, Credentials creds)
+        public GitHubUtils(Credentials creds)
         {
-            var github = getCient(creds);
-            var repos = await github.Repository.GetAllForOrg(org.Name);
+            _creds = creds;
+        }
+
+        public GitHubClient GitHub
+        {
+            get
+            {
+                if (_client == null)
+                {
+                    _client = new GitHubClient(new ProductHeaderValue(_userAgent));
+                    if (_creds != null)
+                    {
+                        _client.Credentials = _creds;
+                    }
+                }
+                return _client;
+            }
+        }
+
+        public async Task<IList<Project>> GetGitHubProjects(Org org)
+        {
+            var repos = await GitHub.Repository.GetAllForOrg(org.Name);
 
             List<Project> projects = new List<Project>(repos.Count);
 
@@ -34,17 +57,26 @@ namespace OssAwesomenessTabulator
             return projects;
         }
 
-        public static async Task<Project> GetGitHubProject(Project project, Credentials creds)
+        public async Task<Project> GetGitHubProject(Project project)
         {
             // Use OckokitAPI to get data on a repo
-            var github = getCient(creds);
-            var repo = await github.Repository.Get(project.GithubOrg, project.GithubRepo);
+            var repo = await GitHub.Repository.Get(project.GithubOrg, project.GithubRepo);
 
             return PopulateProjectFromRepo(project, repo);
         }
 
-        private static Project PopulateProjectFromRepo(Project project, Repository repo)
+        private Project PopulateProjectFromRepo(Project project, Repository repo)
         {
+            // Get GitHub org and repo if we haven't allready
+            if (String.IsNullOrEmpty(project.GithubOrg))
+            {
+                project.GithubOrg = repo.FullName.Split('/')[0];
+            }
+            if (String.IsNullOrEmpty(project.GithubRepo))
+            {
+                project.GithubRepo = repo.Name;
+            }
+            
             // Fields always obtained from GitHub
             project.Created = repo.CreatedAt;
             project.Updated = repo.UpdatedAt;
@@ -52,7 +84,9 @@ namespace OssAwesomenessTabulator
             project.Stars = repo.StargazersCount;
             project.Forks = repo.ForksCount;
             project.OpenIssues = repo.OpenIssuesCount;
-            
+
+            project.Contributors = getContribCount(project.GithubOrg, project.GithubRepo).Result;
+
             // Fields defaulted from GitHub but could have overrides specified
             if (String.IsNullOrEmpty(project.Name))
             {
@@ -70,14 +104,6 @@ namespace OssAwesomenessTabulator
             {
                 project.Language = repo.Language;
             }
-            if (String.IsNullOrEmpty(project.GithubOrg))
-            {
-                project.GithubOrg = repo.FullName.Split('/')[0];
-            }
-            if (String.IsNullOrEmpty(project.GithubRepo))
-            {
-                project.GithubRepo = repo.Name;
-            }
             if (!project.IsFork)
             {
                 project.IsFork = repo.Fork || (!String.IsNullOrEmpty(repo.MirrorUrl));
@@ -85,19 +111,22 @@ namespace OssAwesomenessTabulator
 
             // Calculate Awesomeness
             project.Awesomeness = Awesomeness.Calculate(project);
-
             return project;
         }
 
-
-        private static GitHubClient getCient(Credentials creds)
+        private async Task<int> getContribCount(string org, string repo)
         {
-            GitHubClient client = new GitHubClient(new ProductHeaderValue(_userAgent));
-            if (creds != null)
+            int contributors = 0;
+            try
             {
-                client.Credentials = creds;
-            }            
-            return client;
+                IReadOnlyList<User> users = await GitHub.Repository.GetAllContributors(org, repo);
+                contributors = users.Count();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.TraceError("Exception detected getting contributors for \"{0}/{1}\": {2}", org, repo, ex.StackTrace);
+            }
+            return contributors;
         }
 
     }

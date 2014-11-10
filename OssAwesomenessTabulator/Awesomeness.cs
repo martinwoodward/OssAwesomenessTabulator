@@ -1,9 +1,5 @@
 ﻿using OssAwesomenessTabulator.Data;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OssAwesomenessTabulator
 {
@@ -27,7 +23,7 @@ namespace OssAwesomenessTabulator
         {
             if (project.CommitLast == null)
             {
-                // Project hasn't done anything yet, not very awesome
+                // Project hasn't contributed any code yet, not very awesome
                 return 0;
             }
 
@@ -41,6 +37,13 @@ namespace OssAwesomenessTabulator
             // Make it so a recent contribution pushes you up the stack, but make the effect
             // fade quickly (as determined by the halflife of a push.
             awesomeness += Push_Awesomeness * Math.Pow(Math.E, -1 * Push_Halflife * pushTicks);
+
+            // Forks can be awesome, but generally the root project is more awesome and there
+            // is always a tax to pay when forking. In this instance it's 20%
+            if (project.IsFork)
+            {
+                awesomeness = awesomeness * 0.8;
+            }
             
             // Everyone who makes their code open source is a little bit awesome.
             awesomeness++;

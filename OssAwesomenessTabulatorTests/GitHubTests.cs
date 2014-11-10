@@ -9,24 +9,26 @@ namespace OssAwesomenessTabulatorTests
     [TestClass]
     public class GitHubTests
     {
+        private GitHubUtils github = new GitHubUtils(null);
+
         [TestMethod]
         public void TestGetGitHubProjectData()
         {
-            Project actual = GitHubUtils.GetGitHubProject(new Project { GithubOrg = "SignalR", GithubRepo = "SignalR" }, null).Result;
+            Project actual = github.GetGitHubProject(new Project { GithubOrg = "SignalR", GithubRepo = "SignalR" }).Result;
             Assert.AreEqual<string>("SignalR", actual.Name);
-            actual = GitHubUtils.GetGitHubProject(new Project { GithubOrg = "MSOpenTech", GithubRepo = "dash.js" }, null).Result;
+            actual = github.GetGitHubProject(new Project { GithubOrg = "MSOpenTech", GithubRepo = "dash.js" }).Result;
             Assert.IsTrue(actual.IsFork);
-            actual = GitHubUtils.GetGitHubProject(new Project { GithubOrg = "eclipse", GithubRepo = "jubula.core" }, null).Result;
+            actual = github.GetGitHubProject(new Project { GithubOrg = "eclipse", GithubRepo = "jubula.core" }).Result;
             Assert.IsTrue(actual.IsFork);
-
         }
 
         [TestMethod]
         public void TestGetProjectsFromOrg()
         {
-            IList<Project> projects = GitHubUtils.GetGitHubProjects(new Org { Name = "Microsoft"}, null).Result;
+            IList<Project> projects = github.GetGitHubProjects(new Org { Name = "Microsoft"}).Result;
             Assert.IsNotNull(projects);
         }
+
 
     }
 }

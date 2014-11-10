@@ -112,9 +112,10 @@ namespace OssAwesomenessTabulatorTests
         public void WriteMicrosoftOrgFile()
         {
             Org org = new Org { Name = "Microsoft" };
+            GitHubUtils github = new GitHubUtils(null);
 
             OssData data = new OssData();
-            data.AddProjects(GitHubUtils.GetGitHubProjects(org, null).Result.ToArray());
+            data.AddProjects(github.GetGitHubProjects(org).Result.ToArray());
 
             String json;
             using (var output = new MemoryStream())
@@ -145,7 +146,6 @@ namespace OssAwesomenessTabulatorTests
                 Config.LoadFromWeb("https://raw.githubusercontent.com/Microsoft/microsoft.github.io/master/data",
                 null,
                 new string[] { "MSOpenTech" }));
-
 
             String json;
             using (var output = new MemoryStream())

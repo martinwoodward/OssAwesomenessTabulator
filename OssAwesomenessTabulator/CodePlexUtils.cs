@@ -40,6 +40,7 @@ namespace OssAwesomenessTabulator
             Uri uri = new Uri(project.CodePlexProject);
             string name = uri.Host.Split('.')[0];
             
+            // Call the codeplex stats WEBSERVICE
             var cp = codeplex.GetProjectByName(name);
 
             if (String.IsNullOrEmpty(project.Name))
@@ -54,23 +55,12 @@ namespace OssAwesomenessTabulator
             {
                 project.Description = ((string)cp.Element("ProjectDescription")).Trim();
             }
-            License license = new License
-            {
-                Type = (string)cp.Element("LicenseName"),
-                Url = "http://" + name + ".codeplex.com/license"
-            };
-            if (project.License == null)
-            {
-                project.License = license;
-            }
-            if (String.IsNullOrEmpty(project.License.Type))
-            {
-                project.License.Type = license.Type;
-            }
-            if (String.IsNullOrEmpty(project.License.Url))
-            {
-                project.License.Url = license.Url;
-            }
+
+            project.License = getLicense(project, 
+                (string)cp.Element("LicenseName"), 
+                "http://" + name + ".codeplex.com/license");
+
+            // Activity dates
             string date = (string)cp.Element("ProjectCreatedDate");
             project.Created = DateTimeOffset.Parse(date, new CultureInfo("en-US").DateTimeFormat, DateTimeStyles.AssumeUniversal);
 
@@ -82,14 +72,17 @@ namespace OssAwesomenessTabulator
 
             using (var web = new WebClient())
             {
-                // Stars = follows in CodePlex
+                // Stars = use the follows API in CodePlex
                 project.Stars = JsonConvert
                     .DeserializeObject<Followers>(
                         web.DownloadString(
                             String.Format("http://www.codeplex.com/site/api/projects/{0}/followProject",name)))
                     .TotalFollowers;
 
-                // Look up number or forks / patches.
+                // Ugly screen scrape ATM for forks and contributors
+                // note, I can do this because I have the privaledge of knowing when the
+                // underlying page is going to change. I'll build and API to stop
+                // others having to do this in the future.
                 int forks = 0;
                 try
                 {
@@ -115,6 +108,18 @@ namespace OssAwesomenessTabulator
                         }
                     }
                     project.Forks = forks;
+
+                    // Contributors
+                    string peopleData = web.DownloadString(String.Format("http://{0}.codeplex.com/team/view", name)).ToLower();
+                    int people = 0, i = 0;
+                    string person = "Project Member since".ToLower();
+                    while ((i = peopleData.IndexOf(person, i)) != -1)
+                    {
+                        i += person.Length;
+                        ++people;
+                    }
+                    project.Contributors = people;
+                    
                 }
                 catch (Exception ex)
                 {
@@ -146,6 +151,92 @@ namespace OssAwesomenessTabulator
 	        }
 
             return projects.ToArray();
+        }
+
+        /// <summary>
+        /// Check that the CodePlex site is reporting as being healthy.
+        /// </summary>
+        public bool IsHealthy()
+        {
+            bool up = true;
+
+            string status = "";
+            try
+            {
+                using (var web = new WebClient())
+                {
+                    status = web.DownloadString("http://www.codeplex.com/monitoring/corecheck.aspx");
+                    up = (status.IndexOf("FAILED") > 0);
+                }
+                if (!up)
+                {
+                    System.Diagnostics.Trace.TraceError("CodePlex site reporing issues\n-----\n{0}\n-----", status);
+                }
+            }
+            catch (Exception ex)
+            {
+                up = false;
+                System.Diagnostics.Trace.TraceError("Exception checking CodePlex status: {0}", ex.StackTrace);
+            }
+
+            return up;
+        }
+
+        private License getLicense(Project project, string type, string url)
+        {
+            // License
+            License license = new License
+            {
+                Type = type,
+                Url = url
+            };
+
+            switch (license.Type)
+            {
+                case ("Apache License 2.0 (Apache)"):
+                    license.Type = "Apache 2.0";
+                    break;
+                case ("Simplified BSD License (BSD)"):
+                    license.Type = "BSD";
+                    break;
+                case ("Eclipse Public License (EPL)"):
+                    license.Type = "EPL";
+                    break;
+                case ("GNU General Public License version 2 (GPLv2)"):
+                    license.Type = "GPLv2";
+                    break;
+                case ("GNU General Public License version 3 (GPLv3)"):
+                    license.Type = "GPLv3";
+                    break;
+                case ("GNU Lesser General Public License (LGPL)"):
+                    license.Type = "LGPL";
+                    break;
+                case ("The MIT License (MIT)"):
+                    license.Type = "MIT";
+                    break;
+                case ("Microsoft Public License (Ms-PL)"):
+                    license.Type = "MS-PL";
+                    break;
+                case ("Microsoft Reciprocal License (Ms-RL)"):
+                    license.Type = "MS-RL";
+                    break;
+                default:
+                    break;
+            }
+            if (project.License == null)
+            {
+                project.License = license;
+            }
+            if (!String.IsNullOrEmpty(project.License.Type))
+            {
+                license.Type = project.License.Type;
+            }
+            if (!String.IsNullOrEmpty(project.License.Url))
+            {
+                license.Url = project.License.Url;
+            }
+
+            return license;
         }
 
     }
