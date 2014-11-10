@@ -74,7 +74,7 @@ namespace OssAwesomenessTabulator
                         System.Diagnostics.Trace.TraceError("Exception detected in project \"{0}/{1}\": {2}", project.GithubOrg, project.GithubRepo, ex.StackTrace);
                     }
                 }
-                else if (String.IsNullOrEmpty(project.CodePlexProject))
+                else if (!String.IsNullOrEmpty(project.CodePlexProject))
                 {
                     data.AddProject(codeplex.GetProject(project));
                 }

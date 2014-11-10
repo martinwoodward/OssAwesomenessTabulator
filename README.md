@@ -9,4 +9,5 @@ To take a look at the type of output created see:
 
  - http://martinwoout.blob.core.windows.net/output/projects.json
  - http://martinwoout.blob.core.windows.net/output/projects_top.json
+ - http://martinwoout.blob.core.windows.net/output/projects_all.json
  
