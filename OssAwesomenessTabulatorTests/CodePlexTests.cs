@@ -30,8 +30,7 @@ namespace OssAwesomenessTabulatorTests
         {
             // Note, takes a LONG time for "Microsoft"
             var actual = codeplex.GetProjects("MSOpenTech");
-            Console.Out.WriteLine(actual.Length);
-            Assert.IsTrue(true);
+            Assert.IsTrue(actual.Length > 0);
         }
 
     }

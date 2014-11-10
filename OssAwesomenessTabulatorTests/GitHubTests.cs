@@ -12,9 +12,13 @@ namespace OssAwesomenessTabulatorTests
         [TestMethod]
         public void TestGetGitHubProjectData()
         {
-            Project lookup = new Project { GithubOrg = "SignalR", GithubRepo = "SignalR" };
-            Project actual = GitHubUtils.GetGitHubProject(lookup, null).Result;
+            Project actual = GitHubUtils.GetGitHubProject(new Project { GithubOrg = "SignalR", GithubRepo = "SignalR" }, null).Result;
             Assert.AreEqual<string>("SignalR", actual.Name);
+            actual = GitHubUtils.GetGitHubProject(new Project { GithubOrg = "MSOpenTech", GithubRepo = "dash.js" }, null).Result;
+            Assert.IsTrue(actual.IsFork);
+            actual = GitHubUtils.GetGitHubProject(new Project { GithubOrg = "eclipse", GithubRepo = "jubula.core" }, null).Result;
+            Assert.IsTrue(actual.IsFork);
+
         }
 
         [TestMethod]

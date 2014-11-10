@@ -52,7 +52,7 @@ namespace OssAwesomenessTabulator
             project.Stars = repo.StargazersCount;
             project.Forks = repo.ForksCount;
             project.OpenIssues = repo.OpenIssuesCount;
-
+            
             // Fields defaulted from GitHub but could have overrides specified
             if (String.IsNullOrEmpty(project.Name))
             {
@@ -77,6 +77,10 @@ namespace OssAwesomenessTabulator
             if (String.IsNullOrEmpty(project.GithubRepo))
             {
                 project.GithubRepo = repo.Name;
+            }
+            if (!project.IsFork)
+            {
+                project.IsFork = repo.Fork || (!String.IsNullOrEmpty(repo.MirrorUrl));
             }
 
             // Calculate Awesomeness
