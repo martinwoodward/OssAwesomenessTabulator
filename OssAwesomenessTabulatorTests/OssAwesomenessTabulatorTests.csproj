@@ -60,6 +60,7 @@
     <Compile Include="ConfigTest.cs" />
     <Compile Include="GitHubTests.cs" />
     <Compile Include="AwesomenessTests.cs" />
+    <Compile Include="CodePlexTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OssAwesomenessTabulator\OssAwesomenessTabulator.csproj">

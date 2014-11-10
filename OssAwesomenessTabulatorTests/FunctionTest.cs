@@ -135,7 +135,10 @@ namespace OssAwesomenessTabulatorTests
         [TestMethod]
         public void WriteProjectsFile()
         {
-            OssData data = Functions.GetData(Config.LoadFromWeb("https://raw.githubusercontent.com/Microsoft/microsoft.github.io/master/data"));
+            OssData data = Functions.GetData(
+                Config.LoadFromWeb("https://raw.githubusercontent.com/Microsoft/microsoft.github.io/master/data", 
+                null,
+                new string[] {"Microsoft","MSOpenTech"}));
 
             String json;
             using (var output = new MemoryStream())

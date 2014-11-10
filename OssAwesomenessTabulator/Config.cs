@@ -17,18 +17,27 @@ namespace OssAwesomenessTabulator
     {
         private JToken _orgConfig;
         private JToken _projectConfig;
+        private HashSet<string> _codeplexUsers = new HashSet<string>();
 
         public Credentials GitHubCredentials { get; set; }
+        public string[] CodePlexUsers { get { return _codeplexUsers.ToArray(); } }
 
         private Config()
         {
             // Use Config.LoadFromWeb(string url) to construct
         }
 
-        public static Config LoadFromWeb(string url, Credentials githubCredentials)
+        public static Config LoadFromWeb(string url, Credentials githubCredentials, string[] codeplexUsers)
         {
             Config config = LoadFromWeb(url);
             config.GitHubCredentials = githubCredentials;
+            if (codeplexUsers != null)
+            {
+                foreach (string user in codeplexUsers)
+                {
+                    config._codeplexUsers.Add(user);   
+                }
+            }            
             return config;
         }
 

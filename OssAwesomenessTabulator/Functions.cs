@@ -18,6 +18,7 @@ namespace OssAwesomenessTabulator
         public static OssData GetData(Config config)
         {
             OssData data = new OssData();
+            CodePlexUtils codeplex = new CodePlexUtils();
 
             IList<Org> orgs = config.GetOrgs();
 
@@ -36,6 +37,22 @@ namespace OssAwesomenessTabulator
                 }                
             }
 
+            if (config.CodePlexUsers != null && config.CodePlexUsers.Length > 0)
+            {
+                // We've been configured to crawl some CodePlex users (i.e. Microsoft & MSOpenTech)
+                foreach (string user in config.CodePlexUsers)
+                {
+                    try
+                    {
+                        data.AddProjects(codeplex.GetProjects(user));
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Trace.TraceError("Exception detected in codeplex org \"{0}\": {1}", user, ex.StackTrace);
+                    }
+                }
+            }
+
             // Now we've loaded the projects from the orgs, let's load up the individual projects to load / update
             IList<Project> projects = config.GetProjects();
             foreach (Project project in projects)
@@ -48,11 +65,18 @@ namespace OssAwesomenessTabulator
                 }
                 else if (project.isGitHub())
                 {
-                    data.AddProject(GitHubUtils.GetGitHubProject(project, config.GitHubCredentials).Result);
+                    try
+                    {
+                        data.AddProject(GitHubUtils.GetGitHubProject(project, config.GitHubCredentials).Result);
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Trace.TraceError("Exception detected in project \"{0}/{1}\": {2}", project.GithubOrg, project.GithubRepo, ex.StackTrace);
+                    }
                 }
                 else if (String.IsNullOrEmpty(project.CodePlexProject))
                 {
-                    data.AddProject(CodePlexUtils.GetProject(project));
+                    data.AddProject(codeplex.GetProject(project));
                 }
             }
 

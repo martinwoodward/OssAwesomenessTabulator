@@ -10,6 +10,7 @@ using Microsoft.WindowsAzure;
 using System.Net;
 using Octokit;
 
+
 namespace OssAwesomenessTabulator
 {
     class Program
@@ -34,11 +35,14 @@ namespace OssAwesomenessTabulator
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(ConfigurationManager.ConnectionStrings["AzureWebJobsStorage"].ConnectionString); 
             CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
             CloudBlobContainer container = blobClient.GetContainerReference("output");
+            // Make sure output container exists and it is publicly accessible
             container.CreateIfNotExists();
+            container.SetPermissions(new BlobContainerPermissions { PublicAccess = BlobContainerPublicAccessType.Blob });
             
             // Full file
             Console.Out.WriteLine("Writing projects.json");
             CloudBlockBlob blob = container.GetBlockBlobReference("projects.json");
+            blob.Properties.ContentType = "application/json";
             using (Stream blobStream = blob.OpenWrite())
             {
                 Functions.Write(blobStream, data);
@@ -66,8 +70,13 @@ namespace OssAwesomenessTabulator
                 // Default to Microsoft config.
                 url = "https://raw.githubusercontent.com/Microsoft/microsoft.github.io/master/data";
             }
+            String[] users = null;
+            if (ConfigurationManager.ConnectionStrings["CodePlexUsers"] != null)
+            {
+                users = ConfigurationManager.ConnectionStrings["CodePlexUsers"].ConnectionString.Split(';');
+            }
 
-            return Config.LoadFromWeb(url, creds);
+            return Config.LoadFromWeb(url, creds, users);
         }
     }
 }
