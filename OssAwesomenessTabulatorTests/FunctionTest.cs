@@ -135,15 +135,28 @@ namespace OssAwesomenessTabulatorTests
         [TestMethod]
         public void WriteProjectsFile()
         {
+            //Running against all the Microsoft CodePlex project takes a LONG time
+            //OssData data = Functions.GetData(
+            //    Config.LoadFromWeb("https://raw.githubusercontent.com/Microsoft/microsoft.github.io/master/data", 
+            //    null,
+            //    new string[] {"Microsoft","MSOpenTech"}));
+
             OssData data = Functions.GetData(
-                Config.LoadFromWeb("https://raw.githubusercontent.com/Microsoft/microsoft.github.io/master/data", 
+                Config.LoadFromWeb("https://raw.githubusercontent.com/Microsoft/microsoft.github.io/master/data",
                 null,
-                new string[] {"Microsoft","MSOpenTech"}));
+                new string[] { "MSOpenTech" }));
+
 
             String json;
             using (var output = new MemoryStream())
             {
                 Functions.Write(output, data);
+                json = Encoding.UTF8.GetString(output.ToArray());
+            }
+            File.WriteAllText("c:\\temp\\projects_all.json", json);
+            using (var output = new MemoryStream())
+            {
+                Functions.WriteActive(output, data);
                 json = Encoding.UTF8.GetString(output.ToArray());
             }
             File.WriteAllText("c:\\temp\\projects.json", json);

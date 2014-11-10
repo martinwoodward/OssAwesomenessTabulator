@@ -104,6 +104,14 @@ namespace OssAwesomenessTabulator
             Write(output, data.Top(50));
         }
 
+        public static void WriteActive(
+        [Blob("output/{name}_top.json", FileAccess.Write)] Stream output,
+        OssData data)
+        {
+            Write(output, data.Active());
+        }
+
+
         private static JsonSerializerSettings GetSettings()
         {
             return new JsonSerializerSettings {

@@ -38,18 +38,27 @@ namespace OssAwesomenessTabulator
             // Make sure output container exists and it is publicly accessible
             container.CreateIfNotExists();
             container.SetPermissions(new BlobContainerPermissions { PublicAccess = BlobContainerPublicAccessType.Blob });
-            
-            // Full file
-            Console.Out.WriteLine("Writing projects.json");
-            CloudBlockBlob blob = container.GetBlockBlobReference("projects.json");
-            blob.Properties.ContentType = "application/json";
-            using (Stream blobStream = blob.OpenWrite())
+
+            // The full monty
+            Console.Out.WriteLine("Writing projects_all.json");
+            CloudBlockBlob allBlob = container.GetBlockBlobReference("projects_all.json");
+            allBlob.Properties.ContentType = "application/json";
+            using (Stream blobStream = allBlob.OpenWrite())
             {
                 Functions.Write(blobStream, data);
+            }
+            // Main file
+            Console.Out.WriteLine("Writing projects.json");
+            CloudBlockBlob activeblob = container.GetBlockBlobReference("projects.json");
+            activeblob.Properties.ContentType = "application/json";
+            using (Stream blobStream = activeblob.OpenWrite())
+            {
+                Functions.Write(blobStream, data.Active());
             }
             // Top 50
             Console.Out.WriteLine("Writing projects_top.json");
             CloudBlockBlob topBlob = container.GetBlockBlobReference("projects_top.json");
+            topBlob.Properties.ContentType = "application/json";
             using (Stream blobStream = topBlob.OpenWrite())
             {
                 Functions.Write(blobStream, data.Top(50));

@@ -35,12 +35,32 @@ namespace OssAwesomenessTabulator.Data
 
         public void AddProject(Project project)
         {
-            _projects.Add(project);
+            if (project.License != null && project.License.Type == "Custom License")
+            {
+                // Probably MS-LPL or MSRLT so not really Open Source as per OSI definition
+                return;
+            }
+
             Summary.Projects = _projects.Count;
             Summary.Contributors += project.Contributors;
             Summary.OpenIssues += project.OpenIssues;
             Summary.Forks += project.Forks;
             Summary.Stars += project.Stars;
+
+            if (!String.IsNullOrEmpty(project.Description)
+                && !String.IsNullOrEmpty(project.Name)
+                && (
+                     project.Description.ToLower().Contains(" moved")
+                  || project.Description.ToLower().Contains(" mirror")
+                  || project.Name.ToLower().Contains("obsolete")
+                  || project.Name.ToLower().Contains("moved")
+                  ))
+            {
+                // The stats for these were valid to the whole, but we probably have a better
+                // project to show in the place of these ones.
+                return;
+            }
+            _projects.Add(project);
 
             if (!String.IsNullOrEmpty(project.GithubOrg))
             {
@@ -115,6 +135,19 @@ namespace OssAwesomenessTabulator.Data
             data.Summary = this.Summary;
             return data;
         }
+
+        public OssData Active()
+        {
+            OssData data = new OssData();
+            data.AddProjects(_projects
+                    .OrderByDescending(project => project.Awesomeness)
+                    .ThenByDescending(project => project.CommitLast)
+                    .Where(project => project.CommitLast > DateTimeOffset.Now.Subtract(TimeSpan.FromDays(365)))
+                    .ToArray());
+            data.Summary = this.Summary;
+            return data;
+        }
+
 
     }
 }
