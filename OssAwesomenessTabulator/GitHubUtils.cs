@@ -6,7 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using System.Linq;
+using Newtonsoft.Json;
 
 namespace OssAwesomenessTabulator
 {
@@ -114,6 +114,34 @@ namespace OssAwesomenessTabulator
             return project;
         }
 
+        public bool isHealthy()
+        {
+            bool up = true;
+            try
+            {
+                using (var web = new WebClient())
+                {
+                    string status = JsonConvert
+                        .DeserializeObject<GitHubStatus>(
+                            web.DownloadString("https://status.github.com/api/status.json"))
+                        .Status;
+                    if (status.ToLower() != "good")
+                    {
+                        // Status can be good (green), minor (yellow), or major (red)
+                        up = false;
+                        System.Diagnostics.Trace.TraceError("GitHub site reporting {0} issues. See https://status.github.com/", status);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                up = false;
+                System.Diagnostics.Trace.TraceError("Exception checking GitHub status: {0}", ex.StackTrace);
+            }
+
+            return up;
+        }
+
         private async Task<int> getContribCount(string org, string repo)
         {
             int contributors = 0;
@@ -127,6 +155,12 @@ namespace OssAwesomenessTabulator
                 System.Diagnostics.Trace.TraceError("Exception detected getting contributors for \"{0}/{1}\": {2}", org, repo, ex.StackTrace);
             }
             return contributors;
+        }
+
+        class GitHubStatus
+        {
+            public string Status {get; set;}
+            public DateTimeOffset LastUpdated {get; set;}
         }
 
     }

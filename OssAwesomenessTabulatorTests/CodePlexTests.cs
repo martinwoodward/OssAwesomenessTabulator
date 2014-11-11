@@ -33,5 +33,11 @@ namespace OssAwesomenessTabulatorTests
             Assert.IsTrue(actual.Length > 0);
         }
 
+        [TestMethod]
+        public void TestStatus()
+        {
+            Assert.IsTrue(codeplex.IsHealthy());
+        }
+
     }
 }

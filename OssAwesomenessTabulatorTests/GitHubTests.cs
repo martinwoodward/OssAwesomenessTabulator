@@ -29,6 +29,12 @@ namespace OssAwesomenessTabulatorTests
             Assert.IsNotNull(projects);
         }
 
+        [TestMethod]
+        public void CheckGitHubStatus()
+        {
+            Assert.IsTrue(github.isHealthy());
+        }
+
 
     }
 }

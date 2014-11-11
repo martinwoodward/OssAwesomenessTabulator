@@ -166,7 +166,7 @@ namespace OssAwesomenessTabulator
                 using (var web = new WebClient())
                 {
                     status = web.DownloadString("http://www.codeplex.com/monitoring/corecheck.aspx");
-                    up = (status.IndexOf("FAILED") > 0);
+                    up = (status.IndexOf("FAILED") < 0);
                 }
                 if (!up)
                 {

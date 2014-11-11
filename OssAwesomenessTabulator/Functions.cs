@@ -21,6 +21,13 @@ namespace OssAwesomenessTabulator
             GitHubUtils github = new GitHubUtils(config.GitHubCredentials);
             CodePlexUtils codeplex = new CodePlexUtils();
 
+            // Check GitHub is healthy. 
+            // If it's not green back off and be cool while they recover, we don't need our stats that bad
+            if (!github.isHealthy())
+            {
+                throw new Exception(String.Format("Error: Aborting run due to GitHub health report. See https://status.github.com/"));
+            }
+
             IList<Org> orgs = config.GetOrgs();
 
             // Get the orgs
@@ -41,6 +48,13 @@ namespace OssAwesomenessTabulator
             if (config.CodePlexUsers != null && config.CodePlexUsers.Length > 0)
             {
                 // We've been configured to crawl some CodePlex users (i.e. Microsoft & MSOpenTech)
+
+                // Check if CodePlex is up. If it's not, abort
+                if (!codeplex.IsHealthy())
+                {
+                    throw new Exception(String.Format("Error: Aborting run on on Codeplex Orgs \"{0}\" as site reporting health issues", config.CodePlexUsers));
+                }
+
                 foreach (string user in config.CodePlexUsers)
                 {
                     try
