@@ -40,7 +40,7 @@ namespace OssAwesomenessTabulator
 
             // Forks can be awesome, but generally the root project is more awesome and there
             // is always a tax to pay when forking. In this instance it's 20%
-            if (project.IsFork)
+            if (project.Fork)
             {
                 awesomeness = awesomeness * 0.8;
             }

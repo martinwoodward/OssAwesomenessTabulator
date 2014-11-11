@@ -166,11 +166,17 @@ namespace OssAwesomenessTabulator
                 using (var web = new WebClient())
                 {
                     status = web.DownloadString("http://www.codeplex.com/monitoring/corecheck.aspx");
-                    up = (status.IndexOf("FAILED") < 0);
+                    if (status != null)
+                    {
+                        up = (status.IndexOf("FAILED") < 0);
+                    }
                 }
                 if (!up)
                 {
                     System.Diagnostics.Trace.TraceError("CodePlex site reporing issues\n-----\n{0}\n-----", status);
+                    Console.Out.WriteLine("-----\nCodePlex Health Warning\n-----");
+                    Console.Out.WriteLine(status);
+                    Console.Out.WriteLine("----------");
                 }
             }
             catch (Exception ex)

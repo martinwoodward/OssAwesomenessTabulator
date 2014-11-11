@@ -28,7 +28,9 @@ namespace OssAwesomenessTabulator.Data
         public string GithubRepo { get; set; }
         public string CodePlexProject { get; set; }
         public int OpenIssues { get; set; }
-        public bool IsFork { get; set;}
+        public bool Fork { get; set; }
+        public string ForkedFrom { get; set; }
+        public string ForkedFromUrl { get; set; }
 
         public bool isGitHub()
         {

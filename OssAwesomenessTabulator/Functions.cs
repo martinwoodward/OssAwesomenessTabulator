@@ -21,6 +21,8 @@ namespace OssAwesomenessTabulator
             GitHubUtils github = new GitHubUtils(config.GitHubCredentials);
             CodePlexUtils codeplex = new CodePlexUtils();
 
+            Console.Out.WriteLine("Collecting OSS Data..");
+            
             // Check GitHub is healthy. 
             // If it's not green back off and be cool while they recover, we don't need our stats that bad
             if (!github.isHealthy())
@@ -30,6 +32,7 @@ namespace OssAwesomenessTabulator
 
             IList<Org> orgs = config.GetOrgs();
 
+            Console.Out.WriteLine("Getting data for {0} orgs", orgs.Count());
             // Get the orgs
             foreach (Org org in orgs)
             {
@@ -52,11 +55,12 @@ namespace OssAwesomenessTabulator
                 // Check if CodePlex is up. If it's not, abort
                 if (!codeplex.IsHealthy())
                 {
-                    throw new Exception(String.Format("Error: Aborting run on on Codeplex Orgs \"{0}\" as site reporting health issues", config.CodePlexUsers));
+                    throw new Exception(String.Format("Error: Aborting run on on Codeplex Orgs \"{0}\" as site reporting health issues", config.CodePlexUsers.ToString()));
                 }
 
                 foreach (string user in config.CodePlexUsers)
                 {
+                    Console.Out.WriteLine("Getting data for CodePlex user {0}", user);
                     try
                     {
                         data.AddProjects(codeplex.GetProjects(user));
@@ -70,6 +74,7 @@ namespace OssAwesomenessTabulator
 
             // Now we've loaded the projects from the orgs, let's load up the individual projects to load / update
             IList<Project> projects = config.GetProjects();
+            Console.Out.WriteLine("Adding data for {0} projects", projects.Count());
             foreach (Project project in projects)
             {
                 Project existing = data.GetProject(project);
@@ -94,7 +99,6 @@ namespace OssAwesomenessTabulator
                     data.AddProject(codeplex.GetProject(project));
                 }
             }
-
             return (data);
         }
 

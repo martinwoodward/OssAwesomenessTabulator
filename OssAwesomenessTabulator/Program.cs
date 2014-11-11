@@ -32,6 +32,7 @@ namespace OssAwesomenessTabulator
             OssData data = Functions.GetData(getConfig());
 
             // Write to Azure blob
+            Console.Out.WriteLine("Opening Azure Blob Store");
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(ConfigurationManager.ConnectionStrings["AzureWebJobsStorage"].ConnectionString); 
             CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
             CloudBlobContainer container = blobClient.GetContainerReference("output");

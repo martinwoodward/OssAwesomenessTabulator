@@ -85,7 +85,16 @@ namespace OssAwesomenessTabulator
             project.Forks = repo.ForksCount;
             project.OpenIssues = repo.OpenIssuesCount;
 
-            project.Contributors = getContribCount(project.GithubOrg, project.GithubRepo).Result;
+            if (project.CommitLast != null &&
+                 (project.CommitLast != project.Created) &&
+                  project.Stars > 0)
+            {
+                // There is currently an issue in the Octokit API when looking 
+                // for contributors on a repo that doesn't have anything in it. 
+                // Only bother to look if the repo looks interesting.
+                project.Contributors = getContribCount(project.GithubOrg, project.GithubRepo).Result;
+
+            }
 
             // Fields defaulted from GitHub but could have overrides specified
             if (String.IsNullOrEmpty(project.Name))
@@ -104,9 +113,19 @@ namespace OssAwesomenessTabulator
             {
                 project.Language = repo.Language;
             }
-            if (!project.IsFork)
+            if (!project.Fork)
             {
-                project.IsFork = repo.Fork || (!String.IsNullOrEmpty(repo.MirrorUrl));
+                if (repo.Fork)
+                {
+                    project.Fork = true;
+                    project.ForkedFrom = repo.Parent.FullName;
+                    project.ForkedFromUrl = repo.Parent.HtmlUrl;
+                }
+                if (!String.IsNullOrEmpty(repo.MirrorUrl))
+                {
+                    project.Fork = true;
+                    project.ForkedFromUrl = repo.MirrorUrl;
+                }
             }
 
             // Calculate Awesomeness
@@ -148,7 +167,11 @@ namespace OssAwesomenessTabulator
             try
             {
                 IReadOnlyList<User> users = await GitHub.Repository.GetAllContributors(org, repo);
-                contributors = users.Count();
+                if (users != null)
+                {
+                    contributors = users.Count();
+                }
+                
             }
             catch (Exception ex)
             {

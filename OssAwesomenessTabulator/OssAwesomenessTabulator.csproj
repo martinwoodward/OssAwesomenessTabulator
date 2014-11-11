@@ -136,6 +136,8 @@
     <None Include="packages.config" />
     <None Include="Properties\DataSources\System.Xml.Linq.XElement.datasource" />
     <None Include="Properties\PublishProfiles\MartinWoOssWebJob.pubxml" />
+    <None Include="Properties\PublishProfiles\msftrepos01.pubxml" />
+    <None Include="Properties\PublishProfiles\msftreposwus.pubxml" />
     <None Include="Properties\PublishProfiles\mwdnfwebjob.pubxml" />
     <None Include="Properties\webjob-publish-settings.json" />
     <None Include="Service References\CodePlex\OssAwesomenessTabulator.CodePlex.ArrayOfString.datasource">

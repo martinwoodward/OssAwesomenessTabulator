@@ -17,9 +17,9 @@ namespace OssAwesomenessTabulatorTests
             Project actual = github.GetGitHubProject(new Project { GithubOrg = "SignalR", GithubRepo = "SignalR" }).Result;
             Assert.AreEqual<string>("SignalR", actual.Name);
             actual = github.GetGitHubProject(new Project { GithubOrg = "MSOpenTech", GithubRepo = "dash.js" }).Result;
-            Assert.IsTrue(actual.IsFork);
+            Assert.IsTrue(actual.Fork);
             actual = github.GetGitHubProject(new Project { GithubOrg = "eclipse", GithubRepo = "jubula.core" }).Result;
-            Assert.IsTrue(actual.IsFork);
+            Assert.IsTrue(actual.Fork);
         }
 
         [TestMethod]
