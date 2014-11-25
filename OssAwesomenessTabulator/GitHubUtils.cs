@@ -50,7 +50,12 @@ namespace OssAwesomenessTabulator
                     // Ignore GitHub projects that are forks of other GitHub projects
                     // as they are usually for contributing back stuff, project doesn't
                     // really "belong" to the org in terms of awesomeness.
-                    projects.Add(PopulateProjectFromRepo(new Project(), repo));
+                    Project project = PopulateProjectFromRepo(new Project(), repo);
+                    if (!String.IsNullOrEmpty(org.Contributor))
+                    {
+                        project.Contributor = org.Contributor;
+                    }
+                    projects.Add(project);
                 }
             }
 
@@ -103,11 +108,8 @@ namespace OssAwesomenessTabulator
             }
             if (String.IsNullOrEmpty(project.Url))
             {
-                project.Url = !String.IsNullOrEmpty(repo.Homepage) ? repo.Homepage : repo.HtmlUrl;
-            }
-            if (String.IsNullOrEmpty(project.ProjectUrl))
-            {
-                project.ProjectUrl = repo.HtmlUrl;
+                // project.Url = !String.IsNullOrEmpty(repo.Homepage) ? repo.Homepage : repo.HtmlUrl;
+                project.Url = repo.HtmlUrl;
             }
             if (String.IsNullOrEmpty(project.Description))
             {

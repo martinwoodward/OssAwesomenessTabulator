@@ -51,10 +51,6 @@ namespace OssAwesomenessTabulator
             {
                 project.Url = "http://" + name + ".codeplex.com";
             }
-            if (String.IsNullOrEmpty(project.ProjectUrl))
-            {
-                project.ProjectUrl = "http://" + name + ".codeplex.com";
-            }
 
             if (String.IsNullOrEmpty(project.Description))
             {
@@ -171,22 +167,29 @@ namespace OssAwesomenessTabulator
                 using (var web = new WebClient())
                 {
                     status = web.DownloadString("http://www.codeplex.com/monitoring/corecheck.aspx");
-                    if (status != null)
+                    if (String.IsNullOrEmpty(status))
+                    {
+                        up = false;
+                    } else
                     {
                         up = (status.IndexOf("FAILED") < 0);
                     }
                 }
                 if (!up)
                 {
-                    System.Diagnostics.Trace.TraceError("CodePlex site reporing issues\n-----\n{0}\n-----", status);
                     Console.Out.WriteLine("-----\nCodePlex Health Warning\n-----");
                     Console.Out.WriteLine(status);
                     Console.Out.WriteLine("----------");
+                    System.Diagnostics.Trace.TraceError("CodePlex site reporing issues\n-----\n{0}\n-----", status);
                 }
             }
             catch (Exception ex)
             {
                 up = false;
+                Console.Out.WriteLine("-----\nException in CodePlex Health Warning\n-----");
+                Console.Out.WriteLine(status);
+                Console.Out.WriteLine("----------");
+                Console.Out.WriteLine(ex.ToString());
                 System.Diagnostics.Trace.TraceError("Exception checking CodePlex status: {0}", ex.StackTrace);
             }
 

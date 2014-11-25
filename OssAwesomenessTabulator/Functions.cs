@@ -22,7 +22,31 @@ namespace OssAwesomenessTabulator
             CodePlexUtils codeplex = new CodePlexUtils();
 
             Console.Out.WriteLine("Collecting OSS Data..");
-            
+
+            if (config.CodePlexUsers != null && config.CodePlexUsers.Length > 0)
+            {
+                // We've been configured to crawl some CodePlex users (i.e. Microsoft & MSOpenTech)
+
+                // Check if CodePlex is up. If it's not, abort
+                if (!codeplex.IsHealthy())
+                {
+                    throw new Exception("Error: Aborting run on on Codeplex Orgs as site reporting health issues");
+                }
+
+                foreach (string user in config.CodePlexUsers)
+                {
+                    Console.Out.WriteLine("Getting data for CodePlex user {0}", user);
+                    try
+                    {
+                        data.AddProjects(codeplex.GetProjects(user));
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Trace.TraceError("Exception detected in codeplex org \"{0}\": {1}", user, ex.StackTrace);
+                    }
+                }
+            }
+
             // Check GitHub is healthy. 
             // If it's not green back off and be cool while they recover, we don't need our stats that bad
             if (!github.isHealthy())
@@ -31,7 +55,6 @@ namespace OssAwesomenessTabulator
             }
 
             IList<Org> orgs = config.GetOrgs();
-
             Console.Out.WriteLine("Getting data for {0} orgs", orgs.Count());
             // Get the orgs
             foreach (Org org in orgs)
@@ -48,29 +71,6 @@ namespace OssAwesomenessTabulator
                 }                
             }
 
-            if (config.CodePlexUsers != null && config.CodePlexUsers.Length > 0)
-            {
-                // We've been configured to crawl some CodePlex users (i.e. Microsoft & MSOpenTech)
-
-                // Check if CodePlex is up. If it's not, abort
-                if (!codeplex.IsHealthy())
-                {
-                    throw new Exception(String.Format("Error: Aborting run on on Codeplex Orgs \"{0}\" as site reporting health issues", config.CodePlexUsers.ToString()));
-                }
-
-                foreach (string user in config.CodePlexUsers)
-                {
-                    Console.Out.WriteLine("Getting data for CodePlex user {0}", user);
-                    try
-                    {
-                        data.AddProjects(codeplex.GetProjects(user));
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Trace.TraceError("Exception detected in codeplex org \"{0}\": {1}", user, ex.StackTrace);
-                    }
-                }
-            }
 
             // Now we've loaded the projects from the orgs, let's load up the individual projects to load / update
             IList<Project> projects = config.GetProjects();

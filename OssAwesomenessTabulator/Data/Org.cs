@@ -8,5 +8,6 @@ namespace OssAwesomenessTabulator.Data
         public String Url { get; set; }
         public String Image { get; set; }
         public String Title { get; set; }
+        public String Contributor { get; set; }
     }
 }
