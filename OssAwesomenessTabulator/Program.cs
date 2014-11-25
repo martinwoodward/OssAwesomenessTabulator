@@ -59,27 +59,22 @@ namespace OssAwesomenessTabulator
 
             // The full monty
             Console.Out.WriteLine("Writing projects_all.json");
-            CloudBlockBlob allBlob = container.GetBlockBlobReference("projects_all.json");
-            allBlob.Properties.ContentType = "application/json";
-            using (Stream blobStream = allBlob.OpenWrite())
-            {
-                Functions.Write(blobStream, data);
-            }
+            writeJsonBlob(container, data, "projects_all.json");
             // Main file
             Console.Out.WriteLine("Writing projects.json");
-            CloudBlockBlob activeblob = container.GetBlockBlobReference("projects.json");
-            activeblob.Properties.ContentType = "application/json";
-            using (Stream blobStream = activeblob.OpenWrite())
-            {
-                Functions.Write(blobStream, data.Active());
-            }
+            writeJsonBlob(container, data.Active(), "projects.json");
             // Top 50
             Console.Out.WriteLine("Writing projects_top.json");
-            CloudBlockBlob topBlob = container.GetBlockBlobReference("projects_top.json");
-            topBlob.Properties.ContentType = "application/json";
-            using (Stream blobStream = topBlob.OpenWrite())
+            writeJsonBlob(container, data.Top(50), "projects_top.json");
+        }
+
+        private static void writeJsonBlob(CloudBlobContainer container, OssData data, string filename)
+        {
+            CloudBlockBlob blob = container.GetBlockBlobReference(filename);
+            blob.Properties.ContentType = "application/json";
+            using (Stream blobStream = blob.OpenWrite())
             {
-                Functions.Write(blobStream, data.Top(50));
+                Functions.Write(blobStream, data);
             }
         }
  
