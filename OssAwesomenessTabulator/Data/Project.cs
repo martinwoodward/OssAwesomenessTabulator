@@ -11,6 +11,7 @@ namespace OssAwesomenessTabulator.Data
     {
         public string Name { get; set; }
         public string Url { get; set; }
+        public string ProjectUrl { get; set; }
         public int Awesomeness { get; set; }
         public string Description { get; set; }
         public string[] Keywords { get; set; }

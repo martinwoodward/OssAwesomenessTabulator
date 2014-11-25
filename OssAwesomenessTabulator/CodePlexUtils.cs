@@ -51,6 +51,11 @@ namespace OssAwesomenessTabulator
             {
                 project.Url = "http://" + name + ".codeplex.com";
             }
+            if (String.IsNullOrEmpty(project.ProjectUrl))
+            {
+                project.ProjectUrl = "http://" + name + ".codeplex.com";
+            }
+
             if (String.IsNullOrEmpty(project.Description))
             {
                 project.Description = ((string)cp.Element("ProjectDescription")).Trim();

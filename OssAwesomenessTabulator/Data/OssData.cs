@@ -41,12 +41,6 @@ namespace OssAwesomenessTabulator.Data
                 return;
             }
 
-            Summary.Projects = _projects.Count;
-            Summary.Contributors += project.Contributors;
-            Summary.OpenIssues += project.OpenIssues;
-            Summary.Forks += project.Forks;
-            Summary.Stars += project.Stars;
-
             if (!String.IsNullOrEmpty(project.Description)
                 && !String.IsNullOrEmpty(project.Name)
                 && (
@@ -60,7 +54,14 @@ namespace OssAwesomenessTabulator.Data
                 // project to show in the place of these ones.
                 return;
             }
+
             _projects.Add(project);
+
+            Summary.Projects = _projects.Count;
+            Summary.Contributors += project.Contributors;
+            Summary.OpenIssues += project.OpenIssues;
+            Summary.Forks += project.Forks;
+            Summary.Stars += project.Stars;
 
             if (!String.IsNullOrEmpty(project.GithubOrg))
             {

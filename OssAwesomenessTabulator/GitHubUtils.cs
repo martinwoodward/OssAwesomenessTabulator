@@ -105,6 +105,10 @@ namespace OssAwesomenessTabulator
             {
                 project.Url = !String.IsNullOrEmpty(repo.Homepage) ? repo.Homepage : repo.HtmlUrl;
             }
+            if (String.IsNullOrEmpty(project.ProjectUrl))
+            {
+                project.ProjectUrl = repo.HtmlUrl;
+            }
             if (String.IsNullOrEmpty(project.Description))
             {
                 project.Description = repo.Description;

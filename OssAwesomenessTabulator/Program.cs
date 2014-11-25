@@ -9,6 +9,8 @@ using System.Linq;
 using Microsoft.WindowsAzure;
 using System.Net;
 using Octokit;
+using Microsoft.WindowsAzure.Storage.Shared.Protocol;
+using System.Collections.Generic;
 
 
 namespace OssAwesomenessTabulator
@@ -35,6 +37,21 @@ namespace OssAwesomenessTabulator
             Console.Out.WriteLine("Opening Azure Blob Store");
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(ConfigurationManager.ConnectionStrings["AzureWebJobsStorage"].ConnectionString); 
             CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+
+            // Set CORS
+            ServiceProperties properties = blobClient.GetServiceProperties();
+            properties.Cors = new CorsProperties();
+            properties.Cors.CorsRules.Add(new CorsRule()
+            {
+                AllowedHeaders = new List<string>() { "*" },
+                AllowedMethods = CorsHttpMethods.Put | CorsHttpMethods.Get | CorsHttpMethods.Head | CorsHttpMethods.Post,
+                AllowedOrigins = new List<string>() { "*" },
+                ExposedHeaders = new List<string>() { "*" },
+                MaxAgeInSeconds = 1800 // Make last 30 minutes in cache
+            });
+            blobClient.SetServiceProperties(properties);
+            Console.Out.WriteLine("CORS Updated");
+
             CloudBlobContainer container = blobClient.GetContainerReference("output");
             // Make sure output container exists and it is publicly accessible
             container.CreateIfNotExists();
