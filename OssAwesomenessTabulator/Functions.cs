@@ -104,15 +104,28 @@ namespace OssAwesomenessTabulator
 
         public static void Write( 
             [Blob("output/{name}.json", FileAccess.Write)] Stream output,
-            OssData data)
+            OssData data, string callbackFunction)
         {
             using (StreamWriter sw = new StreamWriter(output, Encoding.UTF8))
             using (JsonWriter jw = new JsonTextWriter(sw))
             {
-                jw.Formatting = Formatting.Indented;
+                if (!String.IsNullOrEmpty(callbackFunction))
+                {
+                    // Been passed a callback function so write as JSONP
+                    sw.Write(callbackFunction);
+                    sw.Write("([");
+                    sw.Flush();
+                }
 
+                jw.Formatting = Formatting.Indented;
                 JsonSerializer js = JsonSerializer.Create(GetSettings());
                 js.Serialize(jw, data);
+
+                if (!String.IsNullOrEmpty(callbackFunction))
+                {
+                    // Was passed a function so close JSONP callback
+                    sw.Write("]);");
+                }
             }
         }
 
@@ -120,14 +133,14 @@ namespace OssAwesomenessTabulator
             [Blob("output/{name}_top.json", FileAccess.Write)] Stream output,
             OssData data)
         {
-            Write(output, data.Top(50));
+            Write(output, data.Top(50),null);
         }
 
         public static void WriteActive(
         [Blob("output/{name}_top.json", FileAccess.Write)] Stream output,
         OssData data)
         {
-            Write(output, data.Active());
+            Write(output, data.Active(), null);
         }
 
 

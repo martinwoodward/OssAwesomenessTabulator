@@ -157,6 +157,17 @@ namespace OssAwesomenessTabulator.Data
             return data;
         }
 
+        public OssData GitHub()
+        {
+            OssData data = new OssData();
+            data.AddProjects(_projects
+                    .OrderByDescending(project => project.Awesomeness)
+                    .ThenByDescending(project => project.CommitLast)
+                    .Where(project => !String.IsNullOrEmpty(project.GithubRepo))
+                    .ToArray());
+            data.Summary = this.Summary;
+            return data;
+        }
 
     }
 }

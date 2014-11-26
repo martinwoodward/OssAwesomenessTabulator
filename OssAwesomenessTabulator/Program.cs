@@ -58,23 +58,33 @@ namespace OssAwesomenessTabulator
             container.SetPermissions(new BlobContainerPermissions { PublicAccess = BlobContainerPublicAccessType.Blob });
 
             // The full monty
-            Console.Out.WriteLine("Writing projects_all.json");
-            writeJsonBlob(container, data, "projects_all.json");
+            writeBlob(container, data, "projects_all");
             // Main file
-            Console.Out.WriteLine("Writing projects.json");
-            writeJsonBlob(container, data.Active(), "projects.json");
+            writeBlob(container, data.Active(), "projects");
             // Top 50
-            Console.Out.WriteLine("Writing projects_top.json");
-            writeJsonBlob(container, data.Top(50), "projects_top.json");
+            writeBlob(container, data.Top(50), "projects_top");
+            // GitHub
+            writeBlob(container, data.GitHub().Active(), "gh_projects");
+            // GH Top 50
+            writeBlob(container, data.GitHub().Top(50), "gh_projects_top");
         }
 
-        private static void writeJsonBlob(CloudBlobContainer container, OssData data, string filename)
+        private static void writeBlob(CloudBlobContainer container, OssData data, string filename)
         {
-            CloudBlockBlob blob = container.GetBlockBlobReference(filename);
-            blob.Properties.ContentType = "application/json";
-            using (Stream blobStream = blob.OpenWrite())
+            Console.Out.WriteLine("Writing " + filename);
+            // Write JSON version
+            CloudBlockBlob jsonBlob = container.GetBlockBlobReference(filename + ".json");
+            jsonBlob.Properties.ContentType = "application/json";
+            using (Stream blobStream = jsonBlob.OpenWrite())
             {
-                Functions.Write(blobStream, data);
+                Functions.Write(blobStream, data, null);
+            }
+            // Write JSONP version
+            CloudBlockBlob jsBlob = container.GetBlockBlobReference(filename + ".js");
+            jsBlob.Properties.ContentType = "application/javascript";
+            using (Stream blobStream = jsBlob.OpenWrite())
+            {
+                Functions.Write(blobStream, data, "JSON_CALLBACK");
             }
         }
  

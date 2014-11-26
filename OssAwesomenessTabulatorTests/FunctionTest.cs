@@ -120,7 +120,7 @@ namespace OssAwesomenessTabulatorTests
             String json;
             using (var output = new MemoryStream())
             {
-                Functions.Write(output, data);
+                Functions.Write(output, data, null);
                 json = Encoding.UTF8.GetString(output.ToArray());
             }
             File.WriteAllText("c:\\temp\\microsoft.json", json);
@@ -150,7 +150,7 @@ namespace OssAwesomenessTabulatorTests
             String json;
             using (var output = new MemoryStream())
             {
-                Functions.Write(output, data);
+                Functions.Write(output, data, null);
                 json = Encoding.UTF8.GetString(output.ToArray());
             }
             File.WriteAllText("c:\\temp\\projects_all.json", json);
