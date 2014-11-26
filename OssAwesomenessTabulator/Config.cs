@@ -21,6 +21,7 @@ namespace OssAwesomenessTabulator
 
         public Credentials GitHubCredentials { get; set; }
         public string[] CodePlexUsers { get { return _codeplexUsers.ToArray(); } }
+        public string DefaultContributor { get; set; }
 
         private Config()
         {

@@ -12,6 +12,7 @@ namespace OssAwesomenessTabulator.Data
     {
         private List<Project> _projects = new List<Project>();
         private HashSet<string> _orgs = new HashSet<string>();
+        private string _defaultContributor;
         
         // Included in JSON
         [DataMember]
@@ -53,6 +54,11 @@ namespace OssAwesomenessTabulator.Data
                 // The stats for these were valid to the whole, but we probably have a better
                 // project to show in the place of these ones.
                 return;
+            }
+
+            if (String.IsNullOrEmpty(project.Contributor))
+            {
+                project.Contributor = _defaultContributor;
             }
 
             _projects.Add(project);
@@ -120,9 +126,11 @@ namespace OssAwesomenessTabulator.Data
         }
 
 
-        public OssData()
+        public OssData() : this(null) {}
+        public OssData(string defaultContributor)
         {
             Summary = new SummaryStats();
+            _defaultContributor = defaultContributor;
         }
 
         public OssData Top(int count)

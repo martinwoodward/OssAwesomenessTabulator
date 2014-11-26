@@ -98,7 +98,15 @@ namespace OssAwesomenessTabulator
                 users = ConfigurationManager.ConnectionStrings["CodePlexUsers"].ConnectionString.Split(';');
             }
 
-            return Config.LoadFromWeb(url, creds, users);
+            Config config = Config.LoadFromWeb(url, creds, users);
+
+            string contributor = CloudConfigurationManager.GetSetting("DefaultContributor");
+            if (!String.IsNullOrEmpty(contributor))
+            {
+                config.DefaultContributor = contributor;
+            }
+
+            return config;
         }
     }
 }

@@ -17,7 +17,7 @@ namespace OssAwesomenessTabulator
 
         public static OssData GetData(Config config)
         {
-            OssData data = new OssData();
+            OssData data = new OssData(config.DefaultContributor);
             GitHubUtils github = new GitHubUtils(config.GitHubCredentials);
             CodePlexUtils codeplex = new CodePlexUtils();
 
