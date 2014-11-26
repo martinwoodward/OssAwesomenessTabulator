@@ -33,6 +33,12 @@ namespace OssAwesomenessTabulator
             // Get Data
             OssData data = Functions.GetData(getConfig());
 
+            Console.Out.WriteLine("Found {0} projects in {1} orgs. {2} forks and {3} stars.", 
+                data.Summary.Projects, 
+                data.Summary.Organizations, 
+                data.Summary.Forks, 
+                data.Summary.Stars);
+
             // Write to Azure blob
             Console.Out.WriteLine("Opening Azure Blob Store");
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(ConfigurationManager.ConnectionStrings["AzureWebJobsStorage"].ConnectionString); 
@@ -67,6 +73,9 @@ namespace OssAwesomenessTabulator
             writeBlob(container, data.GitHub().Active(), "gh_projects");
             // GH Top 50
             writeBlob(container, data.GitHub().Top(50), "gh_projects_top");
+
+            Console.Out.WriteLine("Feeds updated.");
+
         }
 
         private static void writeBlob(CloudBlobContainer container, OssData data, string filename)
@@ -79,6 +88,7 @@ namespace OssAwesomenessTabulator
             {
                 Functions.Write(blobStream, data, null);
             }
+            Console.Out.WriteLine("  " + jsonBlob.Uri);
             // Write JSONP version
             CloudBlockBlob jsBlob = container.GetBlockBlobReference(filename + ".js");
             jsBlob.Properties.ContentType = "application/javascript";
@@ -86,6 +96,7 @@ namespace OssAwesomenessTabulator
             {
                 Functions.Write(blobStream, data, "JSON_CALLBACK");
             }
+            Console.Out.WriteLine("  " + jsBlob.Uri);
         }
  
         private static Config getConfig()
