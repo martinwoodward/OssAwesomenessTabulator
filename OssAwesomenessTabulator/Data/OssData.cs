@@ -61,6 +61,9 @@ namespace OssAwesomenessTabulator.Data
                 project.Contributor = _defaultContributor;
             }
 
+            // give it an ID
+            project.Id = _projects.Count + 1;
+
             _projects.Add(project);
 
             Summary.Projects = _projects.Count;

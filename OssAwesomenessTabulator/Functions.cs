@@ -99,6 +99,7 @@ namespace OssAwesomenessTabulator
                     data.AddProject(codeplex.GetProject(project));
                 }
             }
+
             return (data);
         }
 
