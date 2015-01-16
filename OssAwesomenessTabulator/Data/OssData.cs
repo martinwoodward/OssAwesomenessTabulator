@@ -61,8 +61,8 @@ namespace OssAwesomenessTabulator.Data
                 project.Contributor = _defaultContributor;
             }
 
-            // give it an ID
-            project.Id = _projects.Count + 1;
+            // give it a position
+            project.Rank = _projects.Count + 1;
 
             _projects.Add(project);
 
