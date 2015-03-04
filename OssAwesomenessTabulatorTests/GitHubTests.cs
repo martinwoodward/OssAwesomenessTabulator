@@ -35,6 +35,15 @@ namespace OssAwesomenessTabulatorTests
             Assert.IsTrue(github.isHealthy());
         }
 
+        [TestMethod]
+        public void CalculateTags()
+        {
+            string[] actual = github.GetGitHubProject(new Project { GithubOrg = "JackFullerton", GithubRepo = "JackFullerton.github.io", Tags = new string[] { "jack", "dnf", "oss" } }).Result.Tags;
+            string[] expected = new string[] { "oss", "dnf", "jack" };
+
+            CollectionAssert.AreEquivalent(expected, actual);
+        }
+
 
     }
 }
