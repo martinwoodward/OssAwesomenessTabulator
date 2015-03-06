@@ -15,6 +15,7 @@ namespace OssAwesomenessTabulator
         private GitHubClient _client;
         private Credentials _creds;
         private static readonly string _userAgent = "OssAwesomenessTabulator";
+        private static readonly char[] _nameDelims = new char[] { '.', '_','-' };   
 
         public GitHubUtils(Credentials creds)
         {
@@ -134,9 +135,51 @@ namespace OssAwesomenessTabulator
                 }
             }
 
+            project.Tags = getTags(project, repo);
+            
             // Calculate Awesomeness
             project.Awesomeness = Awesomeness.Calculate(project);
             return project;
+        }
+
+        private string[] getTags(Project project, Repository repo)
+        {
+            // Make tags case insensitive
+            HashSet<string> tags = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+ 
+            // Pass through existing tags
+            if (project.Tags != null)
+            {
+                tags.UnionWith(project.Tags);
+            }
+
+            // Calulcate additional tags
+            tags.Add(repo.Language);
+            if (!String.IsNullOrEmpty(project.Contributor))
+            {
+                tags.Add(project.Contributor);
+            }
+            tags.Add(project.GithubOrg);
+
+            // Pull out the begginging part of a repo name when they have MyThing-something or MyThing.Something
+            if (project.Name.IndexOfAny(_nameDelims) > 1)
+            {
+                tags.Add(project.Name.Substring(0, project.Name.IndexOfAny(_nameDelims)));
+            }
+
+            if (tags.Count == 0)
+            {
+                return null;
+            }
+
+            // Loop over tags and convert to lower case.
+            string[] calculatedTags = new string[tags.Count];
+            for (int i = 0; i < calculatedTags.Length; i++)
+            {
+                calculatedTags[i] = tags.ElementAt<string>(i).ToLowerInvariant();
+            }
+
+            return calculatedTags;
         }
 
         public bool isHealthy()
