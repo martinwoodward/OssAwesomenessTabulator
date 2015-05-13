@@ -35,6 +35,30 @@ namespace OssAwesomenessTabulatorTests
             Assert.IsTrue(github.isHealthy());
         }
 
+        [TestMethod]
+        public void TagsPassedThrough()
+        {
+            string[] actual = github.GetGitHubProject(new Project { GithubOrg = "JackFullerton", GithubRepo = "JackFullerton.github.io", Tags = new string[] { "jack", "dnf", "oss" } }).Result.Tags;
+            string[] expected = new string[] { "oss", "dnf", "jack","html", "jackfullerton" };
+            CollectionAssert.AreEquivalent(expected, actual);
+        }
+
+        [TestMethod]
+        public void AutopopulateTags()
+        {
+            string[] actual = github.GetGitHubProject(new Project { GithubOrg = "dotnet", GithubRepo = "corefx-progress" }).Result.Tags;
+            string[] expected = new string[] { "c#", "dotnet", "corefx" };
+            CollectionAssert.AreEquivalent(expected, actual);
+        }
+
+        [TestMethod]
+        public void TagsCaseInsensitive()
+        {
+            string[] actual = github.GetGitHubProject(new Project { GithubOrg = "JackFullerton", GithubRepo = "JackFullerton.github.io", Tags = new string[] { "Jack", "JACK", "jAck", "oss" } }).Result.Tags;
+            string[] expected = new string[] { "oss", "jack", "html", "jackfullerton" };
+            CollectionAssert.AreEquivalent(expected, actual);
+        }
+
 
     }
 }
