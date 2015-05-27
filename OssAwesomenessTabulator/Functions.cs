@@ -27,11 +27,12 @@ namespace OssAwesomenessTabulator
             {
                 // We've been configured to crawl some CodePlex users (i.e. Microsoft & MSOpenTech)
 
+                // Temporarily remove health check as there are issues with it
                 // Check if CodePlex is up. If it's not, abort
-                if (!codeplex.IsHealthy())
-                {
-                    throw new Exception("Error: Aborting run on on Codeplex Orgs as site reporting health issues");
-                }
+                //if (!codeplex.IsHealthy())
+                //{
+                //    throw new Exception("Error: Aborting run on on Codeplex Orgs as site reporting health issues");
+                //}
 
                 foreach (string user in config.CodePlexUsers)
                 {

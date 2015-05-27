@@ -154,12 +154,18 @@ namespace OssAwesomenessTabulator
             }
 
             // Calulcate additional tags
-            tags.Add(repo.Language);
+            if (!String.IsNullOrEmpty(repo.Language))
+            {
+                tags.Add(repo.Language);
+            }
             if (!String.IsNullOrEmpty(project.Contributor))
             {
                 tags.Add(project.Contributor);
             }
-            tags.Add(project.GithubOrg);
+            if (!String.IsNullOrEmpty(project.GithubOrg))
+            {
+                tags.Add(project.GithubOrg);
+            }
 
             // Pull out the begginging part of a repo name when they have MyThing-something or MyThing.Something
             if (project.Name.IndexOfAny(_nameDelims) > 1)
